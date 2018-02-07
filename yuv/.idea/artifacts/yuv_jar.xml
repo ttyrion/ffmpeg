@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="yuv:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/yuv_jar</output-path>
+    <root id="archive" name="yuv.jar">
+      <element id="module-output" name="yuv" />
+    </root>
+  </artifact>
+</component>
