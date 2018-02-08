@@ -75,3 +75,27 @@ YUV4:2:0 —> YUV4:2:2 Y不变，将U和V信号值的每一行分别拷贝一份
 在采集到RGB24数据后，需要对这个格式的数据进行第一次压缩。即将图像的颜色空间由RGB转为YUV。因为，X264在进行编码的时候需要标准的YUV（4：2：0）。
 然后，经过X264编码后，数据量将大大减少。将编码后的数据打包，通过RTP实时传送。到达目的地后，将数据取出，进行解码。完成解码后，数据仍然是YUV格式的。
 所以，还需要一次转换，这样windows的驱动才可以处理，就是YUV2RGB24。
+
+3.1 YUV转RGB(这里是8-bit YUV 转成 RGB888)
+转自：https://msdn.microsoft.com/en-us/library/ms893078.aspx
+The following coefficients are used in conversion process:
+C = Y - 16
+D = U - 128
+E = V - 128
+
+Using the previous coefficients and noting that clip() denotes clipping a value to the range of 0 to 255, the following
+formulas provide the conversion from YUV to RGB:
+R = clip(( 298 * C           + 409 * E + 128) >> 8)
+G = clip(( 298 * C - 100 * D - 208 * E + 128) >> 8)
+B = clip(( 298 * C + 516 * D           + 128) >> 8)
+
+These formulas use some coefficients that require more than 8 bits of precision to produce each 8-bit result, and
+intermediate results require more than 16 bits of precision.
+
+3.2 RGB888转YUV
+The following formulas define the conversion from RGB to YUV:
+Y = ( (  66 * R + 129 * G +  25 * B + 128) >> 8) +  16
+U = ( ( -38 * R -  74 * G + 112 * B + 128) >> 8) + 128
+V = ( ( 112 * R -  94 * G -  18 * B + 128) >> 8) + 128
+These formulas produce 8-bit results using coefficients that require no more than 8 bits of (unsigned) precision.
+Intermediate results require up to 16 bits of precision.

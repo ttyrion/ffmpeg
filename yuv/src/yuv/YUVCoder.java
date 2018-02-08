@@ -1,5 +1,6 @@
 package yuv;
 import java.io.*;
+import java.util.Arrays;
 
 
 public class YUVCoder {
@@ -30,5 +31,27 @@ public class YUVCoder {
         }
 
         return data;
+    }
+
+    public void deleteColorFromYUV(String yuvFile, String noColorYuvFile) throws IOException{
+        File file = new File(yuvFile);
+        if (file.exists()) {
+            long size = file.length();
+            byte[] buffer = new byte[((int) size)];
+            FileInputStream ifstream = new FileInputStream(file);
+            int offset = 0;
+            int bytesRead;
+            while(offset < size && (bytesRead = ifstream.read(buffer, offset, 1024)) != -1) {
+                offset += bytesRead;
+            }
+            ifstream.close();
+
+            //think why 128 is filled
+            Arrays.fill(buffer, (int)size * 2 / 3, buffer.length, (byte)128);
+            file = new File(noColorYuvFile);
+            FileOutputStream ofstream = new FileOutputStream(file);
+            ofstream.write(buffer);
+            ofstream.close();
+        }
     }
 }
