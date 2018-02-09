@@ -37,7 +37,7 @@ public class PPPlayer {
             ofstream.close();
             */
 
-            byte[] rgb24 = coder.toRGB24(buffer);
+            byte[] rgb24 = coder.toRGB24(buffer, 256, 256);
 
             String[] names = yuvFile.split("\\.");
             String rgbFilePath = new String();

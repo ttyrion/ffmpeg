@@ -27,23 +27,29 @@ public class YUV420PCoder {
     }
 
     //把YUV420P数据格式转成RGB24格式
-    public byte[] toRGB24(byte[] yuvBuffer) {
+    public byte[] toRGB24(byte[] yuvBuffer ,int width ,int height) {
         YUVData yuv = getYUVData(yuvBuffer);
         int pixcels = (int)yuv.y.length;
         byte[] rgb = new byte[pixcels * 3];
+        int indexOfUV = 0;
         for (int i = 0; i < pixcels; ++i) {
+            //像素点行列：YUV420P存储格式中不是连续的4个Y公用一个UV
+            indexOfUV = width / 2 * ( i / width / 2) + i % width / 2;
             int C = ((int)(yuv.y[i] & 0xff) - 16);
-            int D = ((int)(yuv.u[i / 4] & 0xff) - 128);
-            int E = ((int)(yuv.v[i / 4] & 0xff) - 128);
-            //R
-            rgb[i*3+2] = (byte)clip((298 * C + 409 * E + 128) >> 8);
-            //rgb[i*3] = (byte)clip(((yuv.y[i] & 0xff) + (91881 * ((yuv.v[i / 4] & 0xff)) >> 16) - 179 ));
-            //G
-            rgb[i*3+1] = (byte)clip((298 * C - 100 * D - 208 * E + 128) >> 8);
-            //rgb[i*3+1] = (byte)clip(((yuv.y[i] & 0xff) - ((22544 * (yuv.u[i / 4] & 0xff) + 46793 *(yuv.v[i / 4] & 0xff) )>>16)));
+            int D = ((int)(yuv.u[indexOfUV] & 0xff) - 128);
+            int E = ((int)(yuv.v[indexOfUV] & 0xff) - 128);
+
+            //内存中RGB各分量的排列顺序为：BGR
             //B
-            rgb[i*3] = (byte)clip((298 * C + 516 * D + 128) >> 8);
+            //RGB24的像素点存储是逆序？
+            rgb[(pixcels-i-1)*3] = (byte)clip((298 * C + 516 * D + 128) >> 8);
             //rgb[i*3+2] = (byte)clip(((yuv.y[i] & 0xff) + ((116129* (yuv.u[i / 4] & 0xff))>>16)) - 226);
+            //G
+            rgb[(pixcels-i-1)*3+1] = (byte)clip((298 * C - 100 * D - 208 * E + 128) >> 8);
+            //rgb[i*3+1] = (byte)clip(((yuv.y[i] & 0xff) - ((22544 * (yuv.u[i / 4] & 0xff) + 46793 *(yuv.v[i / 4] & 0xff) )>>16)));
+            //R
+            rgb[(pixcels-i-1)*3+2] = (byte)clip((298 * C + 409 * E + 128) >> 8);
+            //rgb[i*3] = (byte)clip(((yuv.y[i] & 0xff) + (91881 * ((yuv.v[i / 4] & 0xff)) >> 16) - 179 ));
         }
 
         return rgb;
