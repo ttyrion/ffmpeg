@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import ui.*;
 import yuv.*;
+import rgb.*;
 
 public class PPPlayer {
     public static void main(String[] args) throws IOException {
@@ -39,6 +40,7 @@ public class PPPlayer {
 
             byte[] rgb24 = coder.toRGB24(buffer, 256, 256);
 
+            /*
             String[] names = yuvFile.split("\\.");
             String rgbFilePath = new String();
             for (int i = 0; i < names.length - 1; ++i) {
@@ -49,6 +51,21 @@ public class PPPlayer {
             file = new File(rgbFilePath);
             FileOutputStream ofstream = new FileOutputStream(file);
             ofstream.write(rgb24);
+            ofstream.close();
+            */
+
+            Bitmap bmp = new Bitmap(rgb24, 256, 256);
+            byte[] bmpBuffer = bmp.getBmpBuffer();
+            String[] names = yuvFile.split("\\.");
+            String bmpFilePath = new String();
+            for (int i = 0; i < names.length - 1; ++i) {
+                bmpFilePath += names[i];
+                bmpFilePath += ".";
+            }
+            bmpFilePath += "bmp";
+            file = new File(bmpFilePath);
+            FileOutputStream ofstream = new FileOutputStream(file);
+            ofstream.write(bmpBuffer);
             ofstream.close();
         }
 
