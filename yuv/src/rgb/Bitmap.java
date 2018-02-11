@@ -171,6 +171,15 @@ public class Bitmap {
         return buffer;
     }
 
+    //图像旋转的公式根据正弦和、余弦和这两个三角定理推导是最简单的
+    //已知一个点，可以知道R以及角度a
+    //x = Rcos(a + degreeOfAngle) = Rcos(a)cos(degreeOfAngle) - Rsin(a)sin(degreeOfAngle)
+    //y = Rsin(a + degreeOfAngle) = Rsin(a)cos(degreeOfAngle) + Rcos(a)sin(degreeOfAngle)
+    public boolean rotate(int degreeOfAngle) {
+
+        return true;
+    }
+
     private BitmapFileHeader fileHeader;
     private BitmapInfoHeader infoHeader;
     private byte[] rgb;
