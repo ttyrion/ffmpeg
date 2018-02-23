@@ -2,7 +2,7 @@ package h264;
 
 //NALU Header中表示优先级的信息，占2bits
 enum NALUPriority {
-    DISPOSABLE,
+    DISPOS,
     LOW,
     HIGN,
     HIGNEST  //优先级最高
@@ -19,17 +19,29 @@ enum NALUType {
     SEI,    //补充增强信息单元
     SPS,    //序列参数集（Sequence Parameter Set）
     PPS,    //图像参数集（Picture Parameter Set）
-    DELIMITER,    //分界符
+    AUD,    //分割器，紧随AUD，一般是SPS/PPS/SEI/IDR的组合或者简单就是一个SLICE，也就是一个帧的开始
     EOSEQ,   //序列结束
     EOSTREAM,  //码流结束
     FILL;    //填充
 }
 
 public class NALUnit {
-    public byte forbidden;   //H264定义forbidden_bit必须为0
+    public int forbidden;   //H264定义forbidden_bit必须为0
     public NALUPriority priority;
     public NALUType type;
     public long startByte;
     public long endByte;
     public byte[] data;
+
+    public String toString() {
+        String expr = new String();
+        expr += "ForbiddenBit:" + forbidden + " " +
+                "Priority:" + priority.ordinal() + " " +
+                "Type:" + type.toString() + " " +
+                "Begin:" + startByte + " " +
+                "End:" + endByte + " " +
+                "Length:" + (endByte - startByte + 1);
+
+        return expr;
+    }
 }

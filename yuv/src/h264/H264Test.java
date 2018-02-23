@@ -2,6 +2,7 @@ package h264;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 
 public class H264Test {
@@ -22,7 +23,12 @@ public class H264Test {
 
             H264Coder coder = new H264Coder();
             ArrayList<NALUnit> naluList = coder.getNALUList(buffer);
-            int m = 0;
+            System.setOut(new PrintStream("./image/sintel.h264.nalu"));
+            for (NALUnit unit : naluList) {
+                System.out.println(unit.toString());
+            }
+
+            System.setOut(System.out);
         }
     }
 }
